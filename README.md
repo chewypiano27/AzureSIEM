@@ -245,3 +245,172 @@ I created a new Playbook in Sentinel’s Automation section using Azure Logic Ap
 The honeypot VM was left running and exposed to the internet for an extended period (approximately 163 hours) to collect a substantial dataset of real-world attack attempts. 
 
 This passive approach allowed for the observation of organic attack patterns without simulating specific attacks. The increasing density of data points on the attack heatmap over time provided clear evidence of ongoing brute-force attempts against the honeypot. 
+
+## Screenshots
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3fe6c64b-aa90-415e-a2d5-1d915d6cd09e" width="800">
+</p>
+<p align="center">
+  After ~39 hours
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/44082a48-e1a9-4bc2-b1db-ebe317e7a611" width="800">
+</p>
+<p align="center">
+  After ~63 hours
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c42fa710-6fba-4c13-9ebc-d1c853247050" width="800">
+</p>
+<p align="center">
+  After ~70 hours
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/930c9361-9d42-4af7-9d91-4e3ad49eb478" width="800">
+</p>
+<p align="center">
+  After ~86 hours
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/9be216da-1e5b-421f-af22-acca7eb77eea" width="800">
+</p>
+<p align="center">
+  After ~92 hours
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c6f3b250-6139-4e71-87d0-46483e83f005" width="800">
+</p>
+<p align="center">
+  After ~109 hours
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/e823dd16-e9f8-499a-a966-8aec07d5e1d0" width="800">
+</p>
+<p align="center">
+  After ~118 hours
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/75df7780-6c03-4e36-ace7-202d5bc83bdb" width="800">
+</p>
+<p align="center">
+  After ~138 hours
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/af56ceab-e541-472f-b107-686e2ab39aad" width="800">
+</p>
+<p align="center">
+  After ~150 hours
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ebab750b-f398-407b-ba71-d5eb5e574c9c" width="800">
+</p>
+<p align="center">
+  After ~163 hours
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/e2360d10-6897-45fa-a028-59026b3a5d7b" width="400">
+</p>
+<p align="center">
+  This is how the logs appear inside the insecure VM within Windows Event Viewer. The logs are filtered by Event ID 4625 (Unsuccessful log on). There were over 32,400 RDP login attempts to the VM (at the time of screenshot 8PM 17/03/2025), as highlighted in the above image.
+</p>
+
+## Ethical and Legal Considerations
+
+### Ethical Reflection
+
+The deployment of a honeypot requires careful consideration of ethical boundaries. While the intention is to attract and analyse malicious activity, it's crucial to ensure that the honeypot does not become a source of attacks against other systems. In this project, the honeypot was configured to only log and analyse incoming connection attempts. No outgoing connections were initiated, and no data was exfiltrated or manipulated. This passive approach minimises the risk of the honeypot being used for malicious purposes. Furthermore, the project adhered to responsible disclosure principles. Any identified vulnerabilities in third-party systems would be reported through appropriate channels rather than exploited. The focus remained on defensive security practices and responsible data handling. 
+
+### Compliance Frameworks
+
+This project aligns with the NIST 800-61 incident management lifecycle, incorporating elements of preparation, detection and analysis, containment, eradication, and recovery. 
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/da24d57c-b556-4d03-9dbb-588d7f48e9b9" width="800">
+</p>
+
+The preparation phase involved configuring log ingestion and alert rules within Azure 
+Sentinel.  
+The detection and analysis phase focused on triaging and investigating incidents, classifying the observed brute-force attempts as "benign positives" due to the lack of successful logins or system compromise.  
+While no containment or eradication actions were required for these benign incidents, the project demonstrated the planned response workflow, including simulated IP blocking and security notifications.  
+The recovery phase, although not strictly necessary for the benign incidents, involved strengthening the overall security posture by restricting network access to VMs, implementing recommendations from Microsoft Defender for Cloud (MDC), enabling regulatory compliance frameworks within MDC (including NIST 800-53), and securing 
+Azure Key Vault and Storage Account instances using private endpoints and firewalls. 
+ 
+I must emphasise - it is important to handle log data responsibly, especially when it comes to personal information. In a corporate setting, this data would be subject to privacy regulations like GDPR, so minimising the data collected and keeping it secure is key. I've tried to follow these best practices here. Also, by using security controls based on the NIST 800-53 standard, I've aimed for a strong security setup, showing how important ethical and compliant practices are in every part of system design and operation. 
+
+## Results
+
+### Effectiveness Metrics
+
+The honeypot attracted a significant volume of brute-force attempts over the 163-hour testing period. The implemented KQL queries effectively identified and categorised these attempts, providing valuable insights into attacker behavior and geographic distribution. While the initial configuration allowed unrestricted access to the honeypot, after observing initial attack patterns, I implemented more restrictive Network Security Group (NSG) rules. Specifically, I limited inbound RDP access to only a few trusted IP addresses. This change resulted in a demonstrable reduction in attack traffic. The logs showed a 100% decrease in failed RDP login attempts after the NSG rules were implemented, which was also reflected in a less dense attack heatmap visualisation. Obviously, a 100% detection rate for the targeted brute-force attacks within the defined scope was achieved. 
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/001aa651-01c8-40eb-89ab-3fec0544e845" width="800">
+</p>
+<p align="center">
+  The heatmap where the VM was insecure and vulnerable to RDP connection attempts. Number of logs: 33,958
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b063fa85-4634-4c09-b04f-40f43a7cc786" width="800">
+</p>
+<p align="center">
+  The heatmap after implementing security solutions to the VM. Number of logs: 0
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/7ed0083b-3c24-4e08-9616-793a6cbac74b" width="400">
+</p>
+<p align="center">
+  SIEM log detection pie chart
+</p>
+
+## Limitations
+
+The scope was limited to detecting and analysing brute-force login attempts against a single Windows VM. Other attack vectors, such as malware delivery, phishing, or denial-of-service attacks, were not captured. Additionally, the simulated nature of the automated response, due to resource constraints of the free Azure trial, prevented the full implementation and testing of automated blocking and mitigation actions. The reliance on a single honeypot also limits the visibility into attack patterns targeting other operating systems or services. 
+
+## Future Implementation & Improvements
+
+I have three recommendations on how this project can be improved, within the scope of the project guidelines. 
+
+### Post-compromise intrusion analysis
+
+To gain deeper insights into attacker behavior, the honeypot can be enhanced with internal traps to monitor post-compromise activity.  This involves planting fake credentials, simulated sensitive data, and instrumented applications within the VM. Network monitoring tools can capture internal traffic.  This setup allows for analysis of malware samples, attacker TTPs (Tactics, Techniques, and Procedures), objectives (e.g. financial gain), and command-and-control infrastructure.  This intelligence enables us to both strengthen defenses & improve incident response, 
+
+### Artificial Intelligence and Machine Learning
+
+Integrating AI and machine learning within Sentinel enhances threat detection by identifying subtle attack patterns. Some attack patterns are not immediately obvious to human observers, yet, artificial intelligence uses millions of datapoints to detect trends before humans can. Anomaly detection establishes baselines of normal activity and triggers alerts on deviations, enabling proactive threat identification.  
+
+### Mutli-honeypot deployment
+A diverse, multi-honeypot deployment provides a broader view of the threat landscape. Variations in OS capture platform-specific attacks. Expanding services (web, database, mail) attract diverse attacks and reveal service vulnerabilities. Carefully managed high-interaction honeypots enable deeper attacker engagement and malware capture.  
+
+
+## References & Documentation
+
+Microsoft. (2025a). Azure documentation. Azure.cn. 
+https://docs.azure.cn/en-us/?product=popular 
+
+Microsoft. (2025b). Kusto documentation - Kusto. Microsoft.com. 
+https://learn.microsoft.com/en-us/kusto/?view=microsoft-fabric 
+
+NIST. (2020a, January 12). NIST SP 800-61. NIST. 
+https://www.nist.gov/privacy-framework/nist-sp-800-61 
+
+NIST. (2020b, September). Security and Privacy Controls for Information Systems and Organizations. Csrc.nist.gov. 
+https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final 
+
+United States Government. (2018, December 3). SamSam Ransomware | CISA. 
+Www.cisa.gov. https://www.cisa.gov/news-events/cybersecurity-advisories/aa18-337a 
+
+Wikipedia Contributors. (2019, October 10). Remote Desktop Protocol. Wikipedia; 
+Wikimedia Foundation. https://en.wikipedia.org/wiki/Remote_Desktop_Protocol 
